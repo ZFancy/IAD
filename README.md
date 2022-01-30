@@ -15,9 +15,11 @@ by *Jianing Zhu, Jiangchao Yao, Bo Han, Jingfeng Zhang, Tongliang Liu, Gang Niu,
 - CUDA
 - Numpy
 
+### Content
+
+
+
 ### Usage
-
-
 
 
 
@@ -42,6 +44,6 @@ url={https://openreview.net/forum?id=u6TRGdzhfip}
 
 [3] ARD: https://github.com/goldblum/AdversariallyRobustDistillation
 
-[4] AKD$^2$: https://github.com/VITA-Group/Alleviate-Robust-Overfitting
+[4] AKD2: https://github.com/VITA-Group/Alleviate-Robust-Overfitting
 
 [5] AutoAttack: https://github.com/fra31/auto-attack
