@@ -47,9 +47,6 @@ torch.backends.cudnn.benchmark = True
 torch.backends.cudnn.deterministic = True
 
 # Models and optimizer
-if args.net == "smallcnn":
-    model = SmallCNN().cuda()
-    net = "smallcnn"
 if args.net == "resnet18":
     model = ResNet18().cuda()
     net = "resnet18"
