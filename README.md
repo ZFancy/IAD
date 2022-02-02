@@ -4,64 +4,64 @@ Code for ICLR 2022 "[Reliable Adversarial Distillation with Unreliable Teachers]
 
 by *Jianing Zhu, Jiangchao Yao, Bo Han, Jingfeng Zhang, Tongliang Liu, Gang Niu, Jingren Zhou, Jianliang Xu, Hongxia Yang*.
 
-### Preferred Requisite
+## Preferred Requisite
 
 - Python
 - Pytorch
 - CUDA
 - Numpy
 
-### Content
+## Content
 
 - ```./models```: models used for pre-train and distillation.
 - ```./pre_train```: code for AT and ST.
 - ```IAD-I.py```: Introspective Adversarial Distillation based on ARD.
 - ```IAD-II.py```: Introspective Adversarial Distillation based on AKD2.
 
-### Usage
+## Usage
 
-- Pre-train
+**Pre-train**
 
+- AT
 ```
-# AT
 $ cd ./pre_train
 $ CUDA_VISIBLE_DEVICES='0' python AT.py --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
+- ST
 ```
-# ST
 $ cd ./pre_train
 $ CUDA_VISIBLE_DEVICES='0' python ST.py --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
-- Distillation
+**Distillation**
 
+- ARD
 ```
-# ARD
 $ CUDA_VISIBLE_DEVICES='0' python ARD.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
+- AKD2
 ```
-# AKD2
 $ CUDA_VISIBLE_DEVICES='0' python AKD2.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
+- IAD-I
 ```
-# IAD-I
 $ CUDA_VISIBLE_DEVICES='0' python IAD-I.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
+- IAD-II
 ```
-# IAD-II
 $ CUDA_VISIBLE_DEVICES='0' python IAD-II.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
+- basic eval
 ```
-# basic eval
 $ CUDA_VISIBLE_DEVICES='0' python basic_eval.py --model_path INSERT-YOUR-MODEL-PATH
 ```
 
-### Citation
+## Citation
 
 ```
 @inproceedings{
@@ -74,7 +74,7 @@ url={https://openreview.net/forum?id=u6TRGdzhfip}
 }
 ```
 
-### Reference Code
+## Reference Code
 
 [1] AT: https://github.com/locuslab/robust_overfitting
 
