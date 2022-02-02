@@ -70,8 +70,6 @@ transform_train = transforms.Compose([
 transform_test = transforms.Compose([
     transforms.ToTensor(),
 ])
-
-
 if args.dataset == 'CIFAR10':
     trainset = torchvision.datasets.CIFAR10(root='~/data/cifar-10', train=True, download=True, transform=transform_train)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=128, shuffle=True, num_workers=2)
@@ -107,7 +105,6 @@ class AttackPGD(nn.Module):
         return self.basic_net(x), x
 
 
-
 # build teacher and student models 
 # dataparalella
 
@@ -140,12 +137,6 @@ config_train = {
     'step_size': 2 / 255,
 }
 
-config_test = {
-    'epsilon': 8 / 255,
-    'num_steps': 10,
-    'step_size': 2 / 255,
-}
-
 net = AttackPGD(basic_net, config_train)
 
 if device == 'cuda':
@@ -156,11 +147,13 @@ teacher_net = torch.nn.DataParallel(teacher_net)
 teacher_net.load_state_dict(torch.load(args.teacher_path)['state_dict'])
 teacher_net.eval()
 
+net_t = AttackPGD(teacher_net, config_train)
 
 KL_loss = nn.KLDivLoss(reduce=False)
 XENT_loss = nn.CrossEntropyLoss()
 lr=args.lr
-def train(epoch, optimizer, net, basic_net):
+
+def train(epoch, optimizer, net, basic_net, teacher_net):
     net.train()
     train_loss = 0
     iterator = tqdm(trainloader, ncols=0, leave=False)
@@ -192,7 +185,7 @@ def train(epoch, optimizer, net, basic_net):
     return train_loss
 
 
-def test(epoch, optimizer, net, basic_net):
+def test(epoch, optimizer, net, basic_net, teacher_net):
     net.eval()
     adv_correct = 0
     natural_correct = 0
@@ -219,24 +212,22 @@ def main():
     lr = args.lr
     best_acc = 0
     test_robust = 0
-
     optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9, weight_decay=2e-4)
     logger_test = Logger(os.path.join(out_dir, 'student_results.txt'), title='student')
     logger_test.set_names(['Epoch', 'Natural Test Acc', 'PGD10 Acc'])
     for epoch in range(args.epochs):
         adjust_learning_rate(optimizer, epoch, lr)
+        
         print("teacher >>>> student ")
-
-        train_loss = train(epoch, optimizer, net, basic_net)
+        train_loss = train(epoch, optimizer, net, basic_net, teacher_net)
 
         if (epoch+1)%args.val_period == 0:
-            natural_val, robust_val = test(epoch, optimizer, net, basic_net)
+            natural_val, robust_val = test(epoch, optimizer, net, basic_net, teacher_net)
             logger_test.append([epoch + 1, natural_val, robust_val])
-
             save_checkpoint({
                         'epoch': epoch + 1,
                         'test_nat_acc': natural_val, 
-                        'test_pgd20_acc': robust_val,
+                        'test_pgd10_acc': robust_val,
                         'state_dict': basic_net.state_dict(),
                         'optimizer' : optimizer.state_dict(),
                     })   
@@ -247,7 +238,7 @@ def main():
                         'epoch': epoch + 1,
                         'state_dict': basic_net.state_dict(),
                         'test_nat_acc': natural_val, 
-                        'test_pgd20_acc': robust_val,
+                        'test_pgd10_acc': robust_val,
                         'optimizer' : optimizer.state_dict(),
                     },filename='bestpoint.pth.tar')            
             

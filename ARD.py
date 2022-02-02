@@ -103,8 +103,6 @@ class AttackPGD(nn.Module):
         return self.basic_net(x), x
 
 
-
-
 # build teacher and student models 
 
 print('==> Building model..'+args.model)
@@ -131,12 +129,6 @@ if args.teacher_path != '':
 		param.requires_grad = False
 
 config_train = {
-    'epsilon': 8 / 255,
-    'num_steps': 10,
-    'step_size': 2 / 255,
-}
-
-config_test = {
     'epsilon': 8 / 255,
     'num_steps': 10,
     'step_size': 2 / 255,
@@ -221,7 +213,7 @@ def main():
             save_checkpoint({
                         'epoch': epoch + 1,
                         'test_nat_acc': natural_val, 
-                        'test_pgd20_acc': robust_val,
+                        'test_pgd10_acc': robust_val,
                         'state_dict': basic_net.state_dict(),
                         'optimizer' : optimizer.state_dict(),
                     })   
@@ -232,7 +224,7 @@ def main():
                         'epoch': epoch + 1,
                         'state_dict': basic_net.state_dict(),
                         'test_nat_acc': natural_val, 
-                        'test_pgd20_acc': robust_val,
+                        'test_pgd10_acc': robust_val,
                         'optimizer' : optimizer.state_dict(),
                     },filename='bestpoint.pth.tar')            
             

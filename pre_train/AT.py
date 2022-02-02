@@ -66,7 +66,7 @@ if args.lr_schedule == 'superconverge':
 elif args.lr_schedule == 'piecewise':
     def lr_schedule(t):
         if args.epochs >= 110:
-            # Train Wide-ResNet
+            # Train ResNet
             if t / args.epochs < 0.5:
                 return args.lr_max
             elif t / args.epochs < 0.75:
@@ -74,7 +74,7 @@ elif args.lr_schedule == 'piecewise':
             else:
                 return args.lr_max / 100.
         else:
-            # Train ResNet
+            # Train Wide-ResNet
             if t / args.epochs < 0.3:
                 return args.lr_max
             elif t / args.epochs < 0.6:
@@ -173,7 +173,7 @@ if args.dataset == "mnist":
     test_loader = torch.utils.data.DataLoader(testset, batch_size=128, shuffle=False, num_workers=1,pin_memory=True)
 
 # Resume 
-title = 'GAIRAT'
+title = 'AT'
 best_acc = 0
 start_epoch = 0
 if resume:
@@ -183,29 +183,26 @@ if resume:
     out_dir = os.path.dirname(resume)
     checkpoint = torch.load(resume)
     start_epoch = checkpoint['epoch']
-    best_acc = checkpoint['test_pgd20_acc']
+    best_acc = checkpoint['test_pgd10_acc']
     model.load_state_dict(checkpoint['state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer'])
     logger_test = Logger(os.path.join(out_dir, 'log_results.txt'), title=title, resume=True)
 else:
     logger_test = Logger(os.path.join(out_dir, 'log_results.txt'), title=title)
-    logger_test.set_names(['Epoch', 'Natural Test Acc', 'PGD20 Acc'])
+    logger_test.set_names(['Epoch', 'Natural Test Acc', 'PGD10 Acc'])
 
 ## Training get started
 test_nat_acc = 0
-test_pgd20_acc = 0
+test_pgd10_acc = 0
 
 for epoch in range(start_epoch, args.epochs):
     
-    # Get lambda
-    Lambda = adjust_Lambda(epoch + 1)
-    
     # Adversarial training
-    train_robust_loss, lr = train(epoch, model, train_loader, optimizer, Lambda)
+    train_robust_loss, lr = train(epoch, model, train_loader, optimizer)
 
     # Evalutions similar to DAT.
     _, test_nat_acc = attack.eval_clean(model, test_loader)
-    _, test_pgd20_acc = attack.eval_robust(model, test_loader, perturb_steps=10, epsilon=8/255, step_size=2/255,loss_fn="cent", category="Madry", random=True)
+    _, test_pgd10_acc = attack.eval_robust(model, test_loader, perturb_steps=10, epsilon=8/255, step_size=2/255,loss_fn="cent", category="Madry", random=True)
 
 
     print(
@@ -214,19 +211,19 @@ for epoch in range(start_epoch, args.epochs):
         args.epochs,
         lr,
         test_nat_acc,
-        test_pgd20_acc)
+        test_pgd10_acc)
         )
          
-    logger_test.append([epoch + 1, test_nat_acc, test_pgd20_acc])
+    logger_test.append([epoch + 1, test_nat_acc, test_pgd10_acc])
     
     # Save the best checkpoint
-    if test_pgd20_acc > best_acc:
-        best_acc = test_pgd20_acc
+    if test_pgd10_acc > best_acc:
+        best_acc = test_pgd10_acc
         save_checkpoint({
                 'epoch': epoch + 1,
                 'state_dict': model.state_dict(),
                 'test_nat_acc': test_nat_acc, 
-                'test_pgd20_acc': test_pgd20_acc,
+                'test_pgd10_acc': test_pgd10_acc,
                 'optimizer' : optimizer.state_dict(),
             },filename='bestpoint.pth.tar')
 
@@ -235,7 +232,7 @@ for epoch in range(start_epoch, args.epochs):
                 'epoch': epoch + 1,
                 'state_dict': model.state_dict(),
                 'test_nat_acc': test_nat_acc, 
-                'test_pgd20_acc': test_pgd20_acc,
+                'test_pgd10_acc': test_pgd10_acc,
                 'optimizer' : optimizer.state_dict(),
             })
     if (epoch+1)%10 == 0:
@@ -244,7 +241,7 @@ for epoch in range(start_epoch, args.epochs):
                 'epoch': epoch + 1,
                 'state_dict': model.state_dict(),
                 'test_nat_acc': test_nat_acc, 
-                'test_pgd20_acc': test_pgd20_acc,
+                'test_pgd10_acc': test_pgd10_acc,
                 'optimizer' : optimizer.state_dict(),
             },filename='check'+str(epoch+1)+'.pth.tar')  
     

@@ -138,7 +138,7 @@ if args.teacher_path != '':
 	for param in teacher_net.parameters():
 		param.requires_grad = False
 
-teacher_st_net = WideResNet(num_classes=num_classes)
+teacher_st_net = ResNet18(num_classes=num_classes)
 teacher_st_net = teacher_st_net.to(device)
 for param in teacher_st_net.parameters():
     param.requires_grad = False
@@ -149,14 +149,7 @@ config_train = {
     'step_size': 2 / 255,
 }
 
-config_test = {
-    'epsilon': 8 / 255,
-    'num_steps': 10,
-    'step_size': 2 / 255,
-}
-
 net = AttackPGD(basic_net, config_train)
-
 
 if device == 'cuda':
     cudnn.benchmark = True
@@ -235,23 +228,22 @@ def main():
     lr = args.lr
     best_acc = 0
     test_robust = 0
-
     optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9, weight_decay=2e-4)
     logger_test = Logger(os.path.join(out_dir, 'student_results.txt'), title='student')
     logger_test.set_names(['Epoch', 'Natural Test Acc', 'PGD10 Acc'])
     for epoch in range(args.epochs):
         adjust_learning_rate(optimizer, epoch, lr)
+        
         print("teacher >>>> student ")
         train_loss = train(epoch, optimizer, net, basic_net, teacher_net)
 
         if (epoch+1)%args.val_period == 0:
             natural_val, robust_val = test(epoch, optimizer, net, basic_net, teacher_net)
             logger_test.append([epoch + 1, natural_val, robust_val])
-
             save_checkpoint({
                         'epoch': epoch + 1,
                         'test_nat_acc': natural_val, 
-                        'test_pgd20_acc': robust_val,
+                        'test_pgd10_acc': robust_val,
                         'state_dict': basic_net.state_dict(),
                         'optimizer' : optimizer.state_dict(),
                     })   
@@ -262,7 +254,7 @@ def main():
                         'epoch': epoch + 1,
                         'state_dict': basic_net.state_dict(),
                         'test_nat_acc': natural_val, 
-                        'test_pgd20_acc': robust_val,
+                        'test_pgd10_acc': robust_val,
                         'optimizer' : optimizer.state_dict(),
                     },filename='bestpoint.pth.tar')            
             

@@ -66,7 +66,7 @@ if args.lr_schedule == 'superconverge':
 elif args.lr_schedule == 'piecewise':
     def lr_schedule(t):
         if args.epochs >= 110:
-            # Train Wide-ResNet
+            # Train ResNet
             if t / args.epochs < 0.5:
                 return args.lr_max
             elif t / args.epochs < 0.75:
@@ -74,7 +74,7 @@ elif args.lr_schedule == 'piecewise':
             else:
                 return args.lr_max / 100.
         else:
-            # Train ResNet
+            # Train Wide-ResNet
             if t / args.epochs < 0.3:
                 return args.lr_max
             elif t / args.epochs < 0.6:
@@ -178,7 +178,7 @@ if resume:
     out_dir = os.path.dirname(resume)
     checkpoint = torch.load(resume)
     start_epoch = checkpoint['epoch']
-    best_acc = checkpoint['test_pgd20_acc']
+    best_acc = checkpoint['test_pgd10_acc']
     model.load_state_dict(checkpoint['state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer'])
     logger_test = Logger(os.path.join(out_dir, 'log_results.txt'), title=title, resume=True)
@@ -188,17 +188,17 @@ else:
 
 ## Training get started
 test_nat_acc = 0
-test_pgd20_acc = 0
+test_pgd10_acc = 0
 
 for epoch in range(start_epoch, args.epochs):
     
     
-    # Adversarial training
+    # standard training
     train_robust_loss, lr = train(epoch, model, train_loader, optimizer)
 
     # Evalutions similar to DAT.
     _, test_nat_acc = attack.eval_clean(model, test_loader)
-    _, test_pgd20_acc = 0,0
+    _, test_pgd10_acc = 0,0
 
 
     print(
@@ -207,10 +207,10 @@ for epoch in range(start_epoch, args.epochs):
         args.epochs,
         lr,
         test_nat_acc,
-        test_pgd20_acc)
+        test_pgd10_acc)
         )
          
-    logger_test.append([epoch + 1, test_nat_acc, test_pgd20_acc])
+    logger_test.append([epoch + 1, test_nat_acc, test_pgd10_acc])
     
     # Save the best checkpoint
     if test_nat_acc > best_acc:
@@ -219,16 +219,16 @@ for epoch in range(start_epoch, args.epochs):
                 'epoch': epoch + 1,
                 'state_dict': model.state_dict(),
                 'test_nat_acc': test_nat_acc, 
-                'test_pgd20_acc': test_pgd20_acc,
+                'test_pgd10_acc': test_pgd10_acc,
                 'optimizer' : optimizer.state_dict(),
             },filename='bestpoint.pth.tar')
 
-    # Save the checkpoint
+    # Save the last checkpoint
     save_checkpoint({
                 'epoch': epoch + 1,
                 'state_dict': model.state_dict(),
                 'test_nat_acc': test_nat_acc, 
-                'test_pgd20_acc': test_pgd20_acc,
+                'test_pgd10_acc': test_pgd10_acc,
                 'optimizer' : optimizer.state_dict(),
             })
     if (epoch+1)%10 == 0:
@@ -237,7 +237,7 @@ for epoch in range(start_epoch, args.epochs):
                 'epoch': epoch + 1,
                 'state_dict': model.state_dict(),
                 'test_nat_acc': test_nat_acc, 
-                'test_pgd20_acc': test_pgd20_acc,
+                'test_pgd10_acc': test_pgd10_acc,
                 'optimizer' : optimizer.state_dict(),
             },filename='check'+str(epoch+1)+'.pth.tar')  
     
