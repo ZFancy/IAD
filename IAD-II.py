@@ -31,7 +31,6 @@ parser.add_argument('--dataset', default = 'CIFAR10', type=str, help='name of da
 parser.add_argument('--out-dir',type=str,default='./IAD_II_CIFAR10',help='dir of output')
 parser.add_argument('--seed', type=int, default=1, metavar='S', help='random seed')
 parser.add_argument('--resume',type=str,default=None,help='whether to resume training')
-parser.add_argument('--beta',type=float,default=0.0)
 parser.add_argument('--alpha1', default=0.5, type=float, help='weight for sum of losses')
 parser.add_argument('--alpha2', default=0.25, type=float, help='weight for sum of losses')
 parser.add_argument('--beta',type=float, default=0.1)
