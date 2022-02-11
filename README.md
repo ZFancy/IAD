@@ -63,7 +63,7 @@ CUDA_VISIBLE_DEVICES='0' python basic_eval.py --model_path INSERT-YOUR-MODEL-PAT
 
 ## Citation
 
-```bash
+```bib
 @inproceedings{zhu2022reliable,
 title={Reliable Adversarial Distillation with Unreliable Teachers},
 author={Jianing Zhu and Jiangchao Yao and Bo Han and Jingfeng Zhang and Tongliang Liu and Gang Niu and Jingren Zhou and Jianliang Xu and Hongxia Yang},
