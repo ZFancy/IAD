@@ -23,49 +23,48 @@ by *Jianing Zhu, Jiangchao Yao, Bo Han, Jingfeng Zhang, Tongliang Liu, Gang Niu,
 **Pre-train**
 
 - AT
-```
-$ cd ./pre_train
-$ CUDA_VISIBLE_DEVICES='0' python AT.py --out-dir INSERT-YOUR-OUTPUT-PATH
+```bash
+cd ./pre_train
+CUDA_VISIBLE_DEVICES='0' python AT.py --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
 - ST
-```
-$ cd ./pre_train
-$ CUDA_VISIBLE_DEVICES='0' python ST.py --out-dir INSERT-YOUR-OUTPUT-PATH
+```bash
+cd ./pre_train
+CUDA_VISIBLE_DEVICES='0' python ST.py --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
 **Distillation**
 
 - ARD
-```
-$ CUDA_VISIBLE_DEVICES='0' python ARD.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
+```bash
+CUDA_VISIBLE_DEVICES='0' python ARD.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
 - AKD2
-```
-$ CUDA_VISIBLE_DEVICES='0' python AKD2.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
+```bash
+CUDA_VISIBLE_DEVICES='0' python AKD2.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
 - IAD-I
-```
-$ CUDA_VISIBLE_DEVICES='0' python IAD-I.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
+```bash
+CUDA_VISIBLE_DEVICES='0' python IAD-I.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
 - IAD-II
-```
-$ CUDA_VISIBLE_DEVICES='0' python IAD-II.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
+```bash
+CUDA_VISIBLE_DEVICES='0' python IAD-II.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
 - basic eval
-```
-$ CUDA_VISIBLE_DEVICES='0' python basic_eval.py --model_path INSERT-YOUR-MODEL-PATH
+```bash
+CUDA_VISIBLE_DEVICES='0' python basic_eval.py --model_path INSERT-YOUR-MODEL-PATH
 ```
 
 ## Citation
 
-```
-@inproceedings{
-zhu2022reliable,
+```bash
+@inproceedings{zhu2022reliable,
 title={Reliable Adversarial Distillation with Unreliable Teachers},
 author={Jianing Zhu and Jiangchao Yao and Bo Han and Jingfeng Zhang and Tongliang Liu and Gang Niu and Jingren Zhou and Jianliang Xu and Hongxia Yang},
 booktitle={International Conference on Learning Representations},
