@@ -4,6 +4,8 @@ Code for ICLR 2022 "[Reliable Adversarial Distillation with Unreliable Teachers]
 
 by *Jianing Zhu, Jiangchao Yao, Bo Han, Jingfeng Zhang, Tongliang Liu, Gang Niu, Jingren Zhou, Jianliang Xu, Hongxia Yang*.
 
+Full code and instructions will be completed soon.
+
 ## Preferred Requisite
 
 - Python
