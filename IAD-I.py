@@ -31,7 +31,7 @@ parser.add_argument('--out-dir',type=str,default='./IAD_I_CIFAR10',help='dir of 
 parser.add_argument('--seed', type=int, default=1, metavar='S', help='random seed')
 parser.add_argument('--resume',type=str,default=None,help='whether to resume training')
 parser.add_argument('--beta',type=float, default=0.1)
-parser.add_argument('--begin',type=int, default=60)
+parser.add_argument('--begin',type=int, default=0)
 args = parser.parse_args()
 
 seed = args.seed

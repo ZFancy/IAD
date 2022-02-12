@@ -34,7 +34,7 @@ parser.add_argument('--resume',type=str,default=None,help='whether to resume tra
 parser.add_argument('--alpha1', default=0.5, type=float, help='weight for sum of losses')
 parser.add_argument('--alpha2', default=0.25, type=float, help='weight for sum of losses')
 parser.add_argument('--beta',type=float, default=0.1)
-parser.add_argument('--begin',type=int, default=40)
+parser.add_argument('--begin',type=int, default=0)
 
 args = parser.parse_args()
 
