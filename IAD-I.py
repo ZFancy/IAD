@@ -162,7 +162,6 @@ def train(epoch, optimizer, net, basic_net, teacher_net):
         optimizer.zero_grad()
         teacher_outputs = teacher_net(inputs)
         outputs, pert_inputs = net(inputs, targets)
-        basic_outputs = basic_net(inputs)
         Alpha = torch.ones(len(inputs)).cuda()
         
         guide = teacher_net(pert_inputs)
@@ -172,9 +171,9 @@ def train(epoch, optimizer, net, basic_net, teacher_net):
                 L = F.softmax(guide, dim=1)[pp][targets[pp].item()]
                 L = L.pow(args.beta).item()
                 Alpha[pp] = L
-            loss = args.alpha*args.temp*args.temp*(1/len(outputs))*torch.sum(KL_loss(F.log_softmax(outputs/args.temp, dim=1),F.softmax(teacher_outputs/args.temp, dim=1)).sum(dim=1)) + args.alpha*(1/len(outputs))*torch.sum(KL_loss(F.log_softmax(outputs, dim=1),F.softmax(basic_net(inputs), dim=1)).sum(dim=1).mul(1-Alpha))+(1.0-args.alpha)*XENT_loss(basic_outputs, targets)
+            loss = args.alpha*args.temp*args.temp*(1/len(outputs))*torch.sum(KL_loss(F.log_softmax(outputs/args.temp, dim=1),F.softmax(teacher_outputs/args.temp, dim=1)).sum(dim=1)) + args.alpha*(1/len(outputs))*torch.sum(KL_loss(F.log_softmax(outputs, dim=1),F.softmax(basic_net(inputs), dim=1)).sum(dim=1).mul(1-Alpha))+(1.0-args.alpha)*XENT_loss(basic_net(inputs), targets)
         else:
-            loss = args.alpha*args.temp*args.temp*(1/len(outputs))*torch.sum(KL_loss(F.log_softmax(outputs/args.temp, dim=1),F.softmax(teacher_outputs/args.temp, dim=1)).sum(dim=1))+(1.0-args.alpha)*XENT_loss(basic_outputs, targets)
+            loss = args.alpha*args.temp*args.temp*(1/len(outputs))*torch.sum(KL_loss(F.log_softmax(outputs/args.temp, dim=1),F.softmax(teacher_outputs/args.temp, dim=1)).sum(dim=1))+(1.0-args.alpha)*XENT_loss(basic_net(inputs), targets)
         
         loss.backward()
         optimizer.step()
