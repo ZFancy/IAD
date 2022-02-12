@@ -45,11 +45,10 @@ print('==> Evaluating Performance under White-box Adversarial Attack')
 
 loss, test_nat_acc = attack.eval_clean(model, test_loader)
 print('Natural Test Accuracy: {:.2f}%'.format(100. * test_nat_acc))
-if args.method == "dat":
-    # Evalutions the same as DAT.
-    loss, fgsm_wori_acc = attack.eval_robust(model, test_loader, perturb_steps=1, epsilon=8/255, step_size=8/255,loss_fn="cent", category="Madry",random=True)
-    print('FGSM without Random Start Test Accuracy: {:.2f}%'.format(100. * fgsm_wori_acc))
-    loss, pgd20_acc = attack.eval_robust(model, test_loader, perturb_steps=20, epsilon=8/255, step_size=2/255,loss_fn="cent", category="Madry", random=True)
-    print('PGD20 Test Accuracy: {:.2f}%'.format(100. * pgd20_acc))
-    loss, cw_wori_acc = attack.eval_robust(model,test_loader, perturb_steps=30, epsilon=8/255, step_size=2/255,loss_fn="cw",category="Madry",random=True)
-    print('CW Test Accuracy: {:.2f}%'.format(100. * cw_wori_acc))
+# Evalutions the same as DAT.
+loss, fgsm_wori_acc = attack.eval_robust(model, test_loader, perturb_steps=1, epsilon=8/255, step_size=8/255,loss_fn="cent", category="Madry",random=True)
+print('FGSM without Random Start Test Accuracy: {:.2f}%'.format(100. * fgsm_wori_acc))
+loss, pgd20_acc = attack.eval_robust(model, test_loader, perturb_steps=20, epsilon=8/255, step_size=2/255,loss_fn="cent", category="Madry", random=True)
+print('PGD20 Test Accuracy: {:.2f}%'.format(100. * pgd20_acc))
+loss, cw_wori_acc = attack.eval_robust(model,test_loader, perturb_steps=30, epsilon=8/255, step_size=2/255,loss_fn="cw",category="Madry",random=True)
+print('CW Test Accuracy: {:.2f}%'.format(100. * cw_wori_acc))
