@@ -14,10 +14,12 @@ In this work, we found the soft-labels provided by the teacher model gradually b
 
 ## Environment
 
-- Python
-- Pytorch
+- Python (3.7.10)
+- Pytorch (1.7.1)
+- torchvision (0.8.2)
 - CUDA
 - Numpy
+- advtorch
 
 ## Content
 
