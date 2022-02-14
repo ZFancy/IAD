@@ -10,7 +10,7 @@ Full code and instructions will be completed soon.
 
 In this work, we found the soft-labels provided by the teacher model gradually becomes ***less and less reliable*** during the adversarial training of student model. Based on that,  we propose to ***partially trust*** the soft labels provided by the teacher model in adversarial distillation.
 
-![](https://github.com/ZFancy/IAD/blob/main/pic/overview.png?raw=true)
+<img src="https://github.com/ZFancy/IAD/blob/main/pic/overview.png?raw=true" style="zoom:80%;" />
 
 ## Environment
 
