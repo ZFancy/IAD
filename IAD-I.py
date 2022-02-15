@@ -9,6 +9,7 @@ import torchvision.transforms as transforms
 import numpy as np
 import os
 import argparse
+import time
 from tqdm import tqdm
 from utils import Logger
 from models import *
@@ -31,7 +32,7 @@ parser.add_argument('--out-dir',type=str,default='./IAD_I_CIFAR10',help='dir of 
 parser.add_argument('--seed', type=int, default=1, metavar='S', help='random seed')
 parser.add_argument('--resume',type=str,default=None,help='whether to resume training')
 parser.add_argument('--beta',type=float, default=0.1)
-parser.add_argument('--begin',type=int, default=0)
+parser.add_argument('--begin',type=int, default=60)
 args = parser.parse_args()
 
 seed = args.seed
@@ -147,13 +148,14 @@ teacher_net = torch.nn.DataParallel(teacher_net)
 teacher_net.load_state_dict(torch.load(args.teacher_path)['state_dict'])
 teacher_net.eval()
 
-net_t = AttackPGD(teacher_net, config_train)
 
 KL_loss = nn.KLDivLoss(reduce=False)
 XENT_loss = nn.CrossEntropyLoss()
 lr=args.lr
 
 def train(epoch, optimizer, net, basic_net, teacher_net):
+    torch.cuda.synchronize()
+    start = time.time()
     net.train()
     train_loss = 0
     iterator = tqdm(trainloader, ncols=0, leave=False)
@@ -162,8 +164,8 @@ def train(epoch, optimizer, net, basic_net, teacher_net):
         optimizer.zero_grad()
         teacher_outputs = teacher_net(inputs)
         outputs, pert_inputs = net(inputs, targets)
+        Alpha = torch.ones(len(inputs)).cuda()        
         basicop = basic_net(pert_inputs).detach()
-        Alpha = torch.ones(len(inputs)).cuda()
         
         guide = teacher_net(pert_inputs)
 
@@ -180,7 +182,9 @@ def train(epoch, optimizer, net, basic_net, teacher_net):
         optimizer.step()
         train_loss += loss.item()
         iterator.set_description(str(loss.item()))
-
+    torch.cuda.synchronize()
+    end = time.time()
+    print(end-start)
     print('Mean Training Loss:', train_loss/len(iterator))
     return train_loss
 
@@ -212,18 +216,28 @@ def main():
     lr = args.lr
     best_acc = 0
     test_robust = 0
+    stu_r = 0
+    tea_r = 0
+    mark = 1
     optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9, weight_decay=2e-4)
     logger_test = Logger(os.path.join(out_dir, 'student_results.txt'), title='student')
-    logger_test.set_names(['Epoch', 'Natural Test Acc', 'PGD10 Acc'])
+    logger_test_teacher = Logger(os.path.join(out_dir, 'teacher_results.txt'), title='teacher')
+    logger_test.set_names(['Epoch', 'Natural Test Acc', 'PGD10 Acc', 'T or S'])
+    logger_test_teacher.set_names(['Epoch', 'Natural Test Acc', 'PGD10 Acc', 'T or S'])
     for epoch in range(args.epochs):
         adjust_learning_rate(optimizer, epoch, lr)
         
         print("teacher >>>> student ")
+        mark = 1
         train_loss = train(epoch, optimizer, net, basic_net, teacher_net)
-
+        
         if (epoch+1)%args.val_period == 0:
             natural_val, robust_val = test(epoch, optimizer, net, basic_net, teacher_net)
-            logger_test.append([epoch + 1, natural_val, robust_val])
+            natural_val_t, robust_val_t = 0, 0
+            logger_test.append([epoch + 1, natural_val, robust_val, mark])
+            logger_test_teacher.append([epoch + 1, natural_val_t, robust_val_t, mark])
+            stu_r = robust_val
+            tea_r = robust_val_t
             save_checkpoint({
                         'epoch': epoch + 1,
                         'test_nat_acc': natural_val, 

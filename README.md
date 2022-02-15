@@ -48,12 +48,12 @@ CUDA_VISIBLE_DEVICES='0' python ST.py --out-dir INSERT-YOUR-OUTPUT-PATH
 
 - ARD
 ```bash
-CUDA_VISIBLE_DEVICES='0' python ARD.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
+CUDA_VISIBLE_DEVICES='0' python IAD-I.py --begin=1000000 --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
 - AKD2
 ```bash
-CUDA_VISIBLE_DEVICES='0' python AKD2.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
+CUDA_VISIBLE_DEVICES='0' python IAD-II.py --begin=1000000 --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
 - IAD-I
@@ -66,6 +66,7 @@ CUDA_VISIBLE_DEVICES='0' python IAD-I.py --teacher_path INSERT-YOUR-TEACHER-PATH
 CUDA_VISIBLE_DEVICES='0' python IAD-II.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
 ```
 
+**Evaluation**
 - basic eval
 ```bash
 CUDA_VISIBLE_DEVICES='0' python basic_eval.py --model_path INSERT-YOUR-MODEL-PATH
