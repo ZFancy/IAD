@@ -164,13 +164,15 @@ def train(epoch, optimizer, net, basic_net, teacher_net):
         optimizer.zero_grad()
         teacher_outputs = teacher_net(inputs)
         outputs, pert_inputs = net(inputs, targets)
-        Alpha = torch.ones(len(inputs)).cuda()        
+        Alpha = torch.ones(len(inputs)).cuda()
+                
         basicop = basic_net(pert_inputs).detach()
-        
         guide = teacher_net(pert_inputs)
+
 
         if epoch >= args.begin:
             for pp in range(len(outputs)):
+
                 L = F.softmax(guide, dim=1)[pp][targets[pp].item()]
                 L = L.pow(args.beta).item()
                 Alpha[pp] = L
