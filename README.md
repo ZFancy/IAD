@@ -46,16 +46,6 @@ CUDA_VISIBLE_DEVICES='0' python ST.py --out-dir INSERT-YOUR-OUTPUT-PATH
 
 **Distillation**
 
-- ARD
-```bash
-CUDA_VISIBLE_DEVICES='0' python IAD-I.py --begin=1000000 --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
-```
-
-- AKD2
-```bash
-CUDA_VISIBLE_DEVICES='0' python IAD-II.py --begin=1000000 --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
-```
-
 - IAD-I
 ```bash
 CUDA_VISIBLE_DEVICES='0' python IAD-I.py --teacher_path INSERT-YOUR-TEACHER-PATH --out-dir INSERT-YOUR-OUTPUT-PATH
@@ -96,3 +86,6 @@ url={https://openreview.net/forum?id=u6TRGdzhfip}
 
 [5] GAIRAT: https://github.com/zjfheart/Geometry-aware-Instance-reweighted-Adversarial-Training
 
+## Contact
+
+Please contact csjnzhu@comp.hkbu.edu.hk if you have any question on the codes.
